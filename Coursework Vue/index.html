@@ -7,7 +7,26 @@
     <title>Vite App</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <div id="app">
+      <h1><span v-text="title"></span></h1>
+      <h2><span v-text="classType"></span></h2>
+      <img v-bind:src="image" v-bind:alt="imageAlt">
+      <p><span v-text="location"></span></p>
+      <p>£<span v-text="price"></span></p>
+    </div>
+    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+    <script type="text/javascript">
+      const pageData = new Vue({
+        el: '#app',
+        data: {
+          title: 'After School Class',
+          classType: 'Maths',
+          location: 'London',
+          price: 100,
+          image: 'src/assets/Maths_Icon.png',
+          imageAlt: 'Maths Icon'
+        }
+      });
+      </script>
   </body>
 </html>
