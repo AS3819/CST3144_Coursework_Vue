@@ -1,32 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
   <body>
     <div id="app">
-      <h1><span v-text="title"></span></h1>
-      <h2><span v-text="classType"></span></h2>
-      <img v-bind:src="image" v-bind:alt="imageAlt">
-      <p><span v-text="location"></span></p>
-      <p>£<span v-text="price"></span></p>
+      <header>
+        <h1><span v-text="sitename"></span></h1>
+      </header>
+      <div id="shoppingCart">
+        <button @click="displayCart">
+          Items in cart: <span v-text="cart.length"></span>
+        </button>
+      </div>
+      <div id="lessonsList" v-for="(lesson, index) in lessons" :key="index">
+        <h2><span v-text="lessons[lesson.id].title"></span></h2>
+        <h3><span v-text="lessons[lesson.id].classType"></span></h3>
+        <img
+          v-bind:src="lessons[lesson.id].image"
+          v-bind:alt="lessons[lesson.id].imageAlt"
+        />
+        <p><span v-text="lessons[lesson.id].location"></span></p>
+        <p>£<span v-text="lessons[lesson.id].price"></span></p>
+        <p>
+          Spaces available: <span v-text="lessons[lesson.id].spaces"></span>
+        </p>
+        <button @click="addToCart(lesson.id)">Add to cart</button>
+      </div>
     </div>
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
     <script type="text/javascript">
       const pageData = new Vue({
-        el: '#app',
+        el: "#app",
         data: {
-          title: 'After School Class',
-          classType: 'Maths',
-          location: 'London',
-          price: 100,
-          image: 'src/assets/Maths_Icon.png',
-          imageAlt: 'Maths Icon'
-        }
+          sitename: "List of Lessons",
+          lessons: [
+            {
+              id: 0,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 1,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 2,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 3,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 4,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 5,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 6,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 7,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 8,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+            {
+              id: 9,
+              title: "After School Class",
+              classType: "Maths",
+              location: "London",
+              price: 100,
+              spaces: 5,
+              image: "src/assets/Maths_Icon.png",
+              imageAlt: "Maths Icon",
+            },
+          ],
+          cart: [],
+        },
+        methods: {
+          addToCart: function (index) {
+            this.cart.push(this.lessons[index]);
+          },
+          displayCart: function () {
+            for (i = 0; i < this.cart.length; i++) {
+              console.log(
+                "ID: " + this.cart[i].id + " Price: " + this.cart[i].price
+              );
+            }
+          },
+        },
       });
-      </script>
+    </script>
   </body>
 </html>
