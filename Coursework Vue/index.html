@@ -28,7 +28,8 @@
         <p>
           Spaces available: <span v-text="lessons[lesson.id].spaces"></span>
         </p>
-        <button @click="addToCart(lesson.id)">Add to cart</button>
+        <button @click="addToCart(lesson.id)" v-if="canAddToCart(lesson.id)">Add to cart</button>
+        <button disabled="disabled" v-else>Add to cart</button>
       </div>
     </div>
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
@@ -50,48 +51,48 @@
             },
             {
               id: 1,
-              title: "After School Class",
-              classType: "Maths",
+              title: "Computer Class",
+              classType: "Computer Science",
               location: "London",
-              price: 100,
+              price: 120,
               spaces: 5,
               image: "src/assets/Maths_Icon.png",
               imageAlt: "Maths Icon",
             },
             {
               id: 2,
-              title: "After School Class",
-              classType: "Maths",
+              title: "English Class",
+              classType: "English",
               location: "London",
-              price: 100,
+              price: 90,
               spaces: 5,
               image: "src/assets/Maths_Icon.png",
               imageAlt: "Maths Icon",
             },
             {
               id: 3,
-              title: "After School Class",
-              classType: "Maths",
+              title: "Chess Lesson",
+              classType: "Chess",
               location: "London",
-              price: 100,
+              price: 140,
               spaces: 5,
               image: "src/assets/Maths_Icon.png",
               imageAlt: "Maths Icon",
             },
             {
               id: 4,
-              title: "After School Class",
+              title: "Maths Lesson",
               classType: "Maths",
               location: "London",
-              price: 100,
+              price: 110,
               spaces: 5,
               image: "src/assets/Maths_Icon.png",
               imageAlt: "Maths Icon",
             },
             {
               id: 5,
-              title: "After School Class",
-              classType: "Maths",
+              title: "History Lesson",
+              classType: "History",
               location: "London",
               price: 100,
               spaces: 5,
@@ -100,40 +101,40 @@
             },
             {
               id: 6,
-              title: "After School Class",
-              classType: "Maths",
+              title: "Electrical Engineering Class",
+              classType: "Electrical Engineering",
               location: "London",
-              price: 100,
+              price: 200,
               spaces: 5,
               image: "src/assets/Maths_Icon.png",
               imageAlt: "Maths Icon",
             },
             {
               id: 7,
-              title: "After School Class",
-              classType: "Maths",
+              title: "Chemistry Class",
+              classType: "Chemistry",
               location: "London",
-              price: 100,
+              price: 160,
               spaces: 5,
               image: "src/assets/Maths_Icon.png",
               imageAlt: "Maths Icon",
             },
             {
               id: 8,
-              title: "After School Class",
-              classType: "Maths",
+              title: "Computer Science Class",
+              classType: "Computer Science",
               location: "London",
-              price: 100,
+              price: 180,
               spaces: 5,
               image: "src/assets/Maths_Icon.png",
               imageAlt: "Maths Icon",
             },
             {
               id: 9,
-              title: "After School Class",
-              classType: "Maths",
+              title: "Geography Class",
+              classType: "Geography",
               location: "London",
-              price: 100,
+              price: 110,
               spaces: 5,
               image: "src/assets/Maths_Icon.png",
               imageAlt: "Maths Icon",
@@ -142,8 +143,18 @@
           cart: [],
         },
         methods: {
+          canAddToCart: function (index) {
+            if (this.lessons[index].spaces > 0) {
+              return true;
+            } else {
+              return false;
+            }
+          },
           addToCart: function (index) {
-            this.cart.push(this.lessons[index]);
+            if (this.canAddToCart(index)) {
+              this.cart.push(this.lessons[index]);
+              this.lessons[index].spaces--;
+            }
           },
           displayCart: function () {
             for (i = 0; i < this.cart.length; i++) {
