@@ -107,10 +107,19 @@ const pageData = new Vue({
       },
     ],
     cart: [],
+    sortType: "id",
+    sortAscending: true,
   },
   methods: {
     canAddToCart: function (index) {
       if (this.lessons[index].spaces > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    cartNotEmpty: function () {
+      if (this.cart.length > 0) {
         return true;
       } else {
         return false;
@@ -130,13 +139,35 @@ const pageData = new Vue({
   },
   computed: {
     sortedLessons() {
-      // the comparison function that defines the order
+      let type = this.sortType;
+      let order1;
+      let order2;
+      if (this.sortAscending) {
+        order1 = 1;
+        order2 = -1;
+      } else {
+        order1 = -1;
+        order2 = 1;
+      }
       function compare(a, b) {
-        if (a.price > b.price) return 1;
-        if (a.price < b.price) return -1;
+        if (type === "id") {
+          if (a.id > b.id) return order1;
+          if (a.id < b.id) return order2;
+          } else if (type === "subject") {
+            if (a.classType > b.classType) return order1;
+            if (a.classType < b.classType) return order2;
+          } else if (type === "price") {
+            if (a.price > b.price) return order1;
+            if (a.price < b.price) return order2;
+          } else if (type === "location") {
+            if (a.location > b.location) return order1;
+            if (a.location < b.location) return order2;
+          } else if (type === "availability") {
+            if (a.spaces > b.spaces) return order1;
+            if (a.spaces < b.spaces) return order2;
+        }
         return 0;
       }
-      // sort the 'products' array and return it
       return this.lessons.sort(compare);
     },
   },

@@ -15,27 +15,29 @@
         </header>
       </div>
       <div id="shoppingCart">
-        <button @click="displayCart">
+        <button @click="displayCart" v-if="cartNotEmpty()">
           Items in cart: <span v-text="cart.length"></span>
         </button>
+        <button disabled="disabled" v-else>Items in cart: <span v-text="cart.length"></button>
       </div>
       <div id="lessonsList" v-for="(lesson, index) in lessons" :key="index">
-        <h2><span v-text="lessons[lesson.id].title"></span></h2>
-        <h3><span v-text="lessons[lesson.id].classType"></span></h3>
+        <h2><span v-text="lesson.title"></span></h2>
+        <h3><span v-text="lesson.classType"></span></h3>
         <img
-          v-bind:src="lessons[lesson.id].image"
-          v-bind:alt="lessons[lesson.id].imageAlt"
+          v-bind:src="lesson.image"
+          v-bind:alt="lesson.imageAlt"
         />
-        <p><span v-text="lessons[lesson.id].location"></span></p>
-        <p>£<span v-text="lessons[lesson.id].price"></span></p>
+        <p><span v-text="lesson.location"></span></p>
+        <p>£<span v-text="lesson.price"></span></p>
         <p>
-          Spaces available: <span v-text="lessons[lesson.id].spaces"></span>
+          Spaces available: <span v-text="lesson.spaces"></span>
         </p>
         <button @click="addToCart(lesson.id)" v-if="canAddToCart(lesson.id)">
           Add to cart
         </button>
         <button disabled="disabled" v-else>Add to cart</button>
       </div>
+      <div v-for="lesson in sortedLessons"></div>
     </div>
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
     <script type="text/javascript" src="JavaScript/Products.js"></script>
