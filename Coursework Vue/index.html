@@ -14,6 +14,29 @@
           <h1><span v-text="sitename"></span></h1>
         </header>
       </div>
+      <div class="sortControls">
+        <div>
+          <h3>Sort by:</h3>
+          <input type="radio" id="sortByID" value="id" v-model="sortType" />
+          <label for="sortByID">ID</label>
+          <input type="radio" id="sortByName" value="title" v-model="sortType" />
+          <label for="sortByName">Name</label>
+          <input type="radio" id="sortBySubject" value="classType" v-model="sortType" />
+          <label for="sortBySubject">Subject</label>
+          <input type="radio" id="sortByLocation" value="location" v-model="sortType"/>
+          <label for="sortByLocation">Location</label>
+          <input type="radio" id="sortByPrice" value="price" v-model="sortType"/>
+          <label for="sortByPrice">Price</label>
+          <input type="radio" id="sortBySpaces" value="spaces" v-model="sortType"/>
+          <label for="sortBySubject">Spaces</label>
+        </div>
+        <div>
+          <input type="radio" id="sortByAscending" value=true v-model="sortAscending"/>
+          <label for="sortBySubject">Ascending</label>
+          <input type="radio" id="sortByDescending" value=false v-model="sortAscending"/>
+          <label for="sortByDescending">Descending</label>
+        </div>
+      </div>
       <div id="shoppingCart">
         <button @click="displayCart" v-if="cartNotEmpty()">
           Items in cart: <span v-text="cart.length"></span>

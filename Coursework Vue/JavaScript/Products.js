@@ -142,6 +142,9 @@ const pageData = new Vue({
       let type = this.sortType;
       let order1;
       let order2;
+      console.log(
+        `sortType: ${this.sortType} sortAscending: ${this.sortAscending}`
+      );
       if (this.sortAscending) {
         order1 = 1;
         order2 = -1;
@@ -151,20 +154,29 @@ const pageData = new Vue({
       }
       function compare(a, b) {
         if (type === "id") {
-          if (a.id > b.id) return order1;
-          if (a.id < b.id) return order2;
-          } else if (type === "subject") {
-            if (a.classType > b.classType) return order1;
-            if (a.classType < b.classType) return order2;
-          } else if (type === "price") {
-            if (a.price > b.price) return order1;
-            if (a.price < b.price) return order2;
-          } else if (type === "location") {
-            if (a.location > b.location) return order1;
-            if (a.location < b.location) return order2;
-          } else if (type === "availability") {
-            if (a.spaces > b.spaces) return order1;
-            if (a.spaces < b.spaces) return order2;
+          if (a.id > b.id) {
+            console.log("Order 1");
+            return order1;
+          }
+          if (a.id < b.id) {
+            console.log("Order 2");
+            return order2;
+          }
+        } else if (type === "title") {
+          if (a.title > b.title) return order1;
+          if (a.title < b.title) return order2;
+        } else if (type === "price") {
+          if (a.price > b.price) return order1;
+          if (a.price < b.price) return order2;
+        } else if (type === "location") {
+          if (a.location > b.location) return order1;
+          if (a.location < b.location) return order2;
+        } else if (type === "classType") {
+          if (a.classType > b.classType) return order1;
+          if (a.classType < b.classType) return order2;
+        } else if (type === "spaces") {
+          if (a.spaces > b.spaces) return order1;
+          if (a.spaces < b.spaces) return order2;
         }
         return 0;
       }
