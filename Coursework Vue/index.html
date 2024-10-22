@@ -69,6 +69,13 @@
           <br></br>
         </div>
       </div>
+      <div class="checkoutPage" id="checkoutList">
+        <ul class="checkoutPage" v-for="(lesson, index) in filteredCart" :key="index">
+          <li>
+            <p>Title: <span v-text="lesson.title"></span> Subject: <span v-text="lesson.classType"></span> Price: £<span v-text="lesson.price"></span> Count: <span v-text="5 - lesson.spaces"></span></p>
+          </li>
+        </ul>
+      </div>
       <div v-for="lesson in sortedLessons"></div>
     </div>
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>

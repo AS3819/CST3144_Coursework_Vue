@@ -131,9 +131,18 @@ const pageData = new Vue({
       }
     },
     addToCart: function (index) {
-      if (this.canAddToCart(index)) {
-        this.cart.push(this.lessons[index]);
-        this.lessons[index].spaces--;
+      let lessonIndex;
+      for (let i = 0; i < this.lessons.length; i++) {
+        if ((this.lessons[i].id === index)) {
+          lessonIndex = i;
+          break;
+        }
+      }
+      if (this.canAddToCart(lessonIndex)) {
+        console.log(index);
+        console.log(lessonIndex);
+        this.cart.push(this.lessons[lessonIndex]);
+        this.lessons[lessonIndex].spaces--;
       }
     },
     displayCart: function () {
@@ -148,6 +157,7 @@ const pageData = new Vue({
       const sortControls = document.getElementById("sortControls");
       const searchBarContainer = document.getElementById("searchBarContainer");
       const lessonsList = document.getElementById("lessonsList");
+      const checkoutList = document.getElementById("checkoutList");
       lessonsPages.push(sortControls);
       lessonsPages.push(searchBarContainer);
       lessonsPages.push(lessonsList);
@@ -156,11 +166,13 @@ const pageData = new Vue({
         for (let i = 0; i < lessonsPages.length; i++) {
           lessonsPages[i].style.display = "none";
         }
+        checkoutList.style.display = "block";
       } else {
         console.log(false);
         for (let i = 0; i < lessonsPages.length; i++) {
           lessonsPages[i].style.display = "block";
         }
+        checkoutList.style.display = "none";
       }
     },
   },
@@ -234,6 +246,10 @@ const pageData = new Vue({
         );
       }
       return this.lessons.filter(checkItem);
+    },
+    filteredCart() {
+      const returnCart = [...new Set(this.cart)];
+      return returnCart;
     },
   },
 });
