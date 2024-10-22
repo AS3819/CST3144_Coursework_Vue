@@ -9,6 +9,10 @@
     src: url(/Fonts/Constantia-Font/Constantia\ Font.ttf);
   }
 
+.lessonsPage {
+  display: block;
+}
+
 .pageTitle {
   position: absolute;
   top: 30px;

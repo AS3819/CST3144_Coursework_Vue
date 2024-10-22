@@ -1,5 +1,8 @@
 "use strict";
 
+//Imported data.
+import * as Page from "./Data/Page_Data.js";
+
 const pageData = new Vue({
   el: "#app",
   data: {
@@ -110,6 +113,7 @@ const pageData = new Vue({
     sortType: "id",
     sortAscending: true,
     searchInput: "",
+    checkoutPage: false,
   },
   methods: {
     canAddToCart: function (index) {
@@ -133,8 +137,30 @@ const pageData = new Vue({
       }
     },
     displayCart: function () {
-      for (i = 0; i < this.cart.length; i++) {
+      for (let i = 0; i < this.cart.length; i++) {
         console.log("ID: " + this.cart[i].id + " Price: " + this.cart[i].price);
+      }
+      this.checkoutPage = !this.checkoutPage;
+      this.switchPage();
+    },
+    switchPage: function () {
+      const lessonsPages = [];
+      const sortControls = document.getElementById("sortControls");
+      const searchBarContainer = document.getElementById("searchBarContainer");
+      const lessonsList = document.getElementById("lessonsList");
+      lessonsPages.push(sortControls);
+      lessonsPages.push(searchBarContainer);
+      lessonsPages.push(lessonsList);
+      if (this.checkoutPage) {
+        console.log(true);
+        for (let i = 0; i < lessonsPages.length; i++) {
+          lessonsPages[i].style.display = "none";
+        }
+      } else {
+        console.log(false);
+        for (let i = 0; i < lessonsPages.length; i++) {
+          lessonsPages[i].style.display = "block";
+        }
       }
     },
   },
@@ -144,9 +170,6 @@ const pageData = new Vue({
       try {
         this.sortAscending = JSON.parse(this.sortAscending);
       } catch (error) {}
-      console.log(
-        `sortType: ${this.sortType} sortAscending: ${this.sortAscending}`
-      );
       function compare(a, b) {
         if (type === "id") {
           if (a.id > b.id) {
@@ -202,7 +225,6 @@ const pageData = new Vue({
     search() {
       const searchInput = this.searchInput;
       function checkItem(item) {
-        console.log("Executed");
         return (
           item.title.toLowerCase().includes(searchInput.toLowerCase()) ||
           item.classType.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -211,10 +233,6 @@ const pageData = new Vue({
           JSON.stringify(item.spaces).includes(searchInput.toLowerCase())
         );
       }
-      console.log("Standard:");
-      console.log(this.lessons);
-      console.log("Filtered:");
-      console.log(this.lessons.filter(checkItem));
       return this.lessons.filter(checkItem);
     },
   },
