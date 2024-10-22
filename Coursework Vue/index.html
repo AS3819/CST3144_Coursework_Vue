@@ -37,13 +37,16 @@
           <label for="sortByDescending">Descending</label>
         </div>
       </div>
+      <div class="searchBarContainer">
+        <input type="text" id="searchBar" v-model="searchInput" placeholder="Search..." />
+      </div>
       <div id="shoppingCart">
         <button @click="displayCart" v-if="cartNotEmpty()">
           Items in cart: <span v-text="cart.length"></span>
         </button>
         <button disabled="disabled" v-else>Items in cart: <span v-text="cart.length"></button>
       </div>
-      <div id="lessonsList" v-for="(lesson, index) in lessons" :key="index">
+      <div id="lessonsList" v-for="(lesson, index) in search" :key="index">
         <h2><span v-text="lesson.title"></span></h2>
         <h3><span v-text="lesson.classType"></span></h3>
         <img

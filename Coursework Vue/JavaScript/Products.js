@@ -109,6 +109,7 @@ const pageData = new Vue({
     cart: [],
     sortType: "id",
     sortAscending: true,
+    searchInput: "",
   },
   methods: {
     canAddToCart: function (index) {
@@ -140,47 +141,81 @@ const pageData = new Vue({
   computed: {
     sortedLessons() {
       let type = this.sortType;
-      let order1;
-      let order2;
+      try {
+        this.sortAscending = JSON.parse(this.sortAscending);
+      } catch (error) {}
       console.log(
         `sortType: ${this.sortType} sortAscending: ${this.sortAscending}`
       );
-      if (this.sortAscending) {
-        order1 = 1;
-        order2 = -1;
-      } else {
-        order1 = -1;
-        order2 = 1;
-      }
       function compare(a, b) {
         if (type === "id") {
           if (a.id > b.id) {
-            console.log("Order 1");
-            return order1;
+            return 1;
           }
           if (a.id < b.id) {
-            console.log("Order 2");
-            return order2;
+            return -1;
           }
         } else if (type === "title") {
-          if (a.title > b.title) return order1;
-          if (a.title < b.title) return order2;
+          if (a.title > b.title) {
+            return 1;
+          }
+          if (a.title < b.title) {
+            return -1;
+          }
         } else if (type === "price") {
-          if (a.price > b.price) return order1;
-          if (a.price < b.price) return order2;
+          if (a.price > b.price) {
+            return 1;
+          }
+          if (a.price < b.price) {
+            return -1;
+          }
         } else if (type === "location") {
-          if (a.location > b.location) return order1;
-          if (a.location < b.location) return order2;
+          if (a.location > b.location) {
+            return 1;
+          }
+          if (a.location < b.location) {
+            return -1;
+          }
         } else if (type === "classType") {
-          if (a.classType > b.classType) return order1;
-          if (a.classType < b.classType) return order2;
+          if (a.classType > b.classType) {
+            return 1;
+          }
+          if (a.classType < b.classType) {
+            return -1;
+          }
         } else if (type === "spaces") {
-          if (a.spaces > b.spaces) return order1;
-          if (a.spaces < b.spaces) return order2;
+          if (a.spaces > b.spaces) {
+            return 1;
+          }
+          if (a.spaces < b.spaces) {
+            return -1;
+          }
         }
         return 0;
       }
-      return this.lessons.sort(compare);
+      if (this.sortAscending) {
+        return this.lessons.sort(compare);
+      } else {
+        return this.lessons.sort(compare).reverse();
+      }
+    },
+    search() {
+      const searchInput = this.searchInput;
+      function checkItem(item) {
+        console.log("Executed");
+        return (
+          item.title.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.classType.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.location.toLowerCase().includes(searchInput.toLowerCase()) ||
+          JSON.stringify(item.price).includes(searchInput.toLowerCase()) ||
+          JSON.stringify(item.spaces).includes(searchInput.toLowerCase())
+        );
+      }
+      console.log("Standard:");
+      console.log(this.lessons);
+      console.log("Filtered:");
+      console.log(this.lessons.filter(checkItem));
+      return this.lessons.filter(checkItem);
     },
   },
 });
