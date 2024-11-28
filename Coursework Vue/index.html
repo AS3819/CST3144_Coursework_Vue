@@ -75,10 +75,20 @@
             <p>Title: <span v-text="lesson.title"></span> Subject: <span v-text="lesson.classType"></span> Price: £<span v-text="lesson.price"></span> Count: <span v-text="5 - lesson.spaces"></span></p>
           </li>
         </ul>
+        <div class="checkoutOptions">
+          <label>Name:</label>
+          <input id="checkoutNameInput" type="text">
+          <label>Telephone Number:</label>
+          <input id="checkoutTelephoneInput" type="text">
+          <button @click="confirmOrder" v-if="checkoutFieldsEmpty()">Confirm Order</button>
+          <button disabled="disabled" v-else>Confirm Order</button>
+          <p id="checkoutConfirmationMessage"></p>
+        </div>
       </div>
       <div v-for="lesson in sortedLessons"></div>
     </div>
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
     <script type="module" src="JavaScript/Products.js"></script>
+    <script type="module" src="JavaScript/AJAX.js"></script>
   </body>
 </html>

@@ -175,6 +175,20 @@ const pageData = new Vue({
         checkoutList.style.display = "none";
       }
     },
+    checkoutFieldsEmpty: function () {
+      const name = document.getElementById("checkoutNameInput").value;
+      const telephoneNumber = document.getElementById("checkoutTelephoneInput").value;
+      if ((name !== "" && name !== undefined) && (telephoneNumber !== "" && telephoneNumber !== undefined)) {
+        console.log(`Name: ${name}, Number: ${telephoneNumber}.`);
+        return true;
+      } else {
+        console.log(`Name: ${name}, Number: ${telephoneNumber}.`);
+        return false;
+      }
+    },
+    confirmOrder: function () {
+      console.log("Order confirmed.");
+    }
   },
   computed: {
     sortedLessons() {
