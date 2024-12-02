@@ -117,7 +117,7 @@ const pageData = new Vue({
     checkoutTelephone: "",
     searchLocal: false,
     localURL: "http://localhost:8080",
-    globalURL: "https://as3819.github.io/CST3144_Coursework_Express",
+    globalURL: "https://cst3144-coursework-express.onrender.com",
   },
   methods: {
     canAddToCart: function (lesson) {
