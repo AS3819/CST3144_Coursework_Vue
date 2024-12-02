@@ -1,7 +1,7 @@
 "use strict";
 
 //Function for getting the list of lessons from the server.
-async function retrieveLessons() {
+async function retrieveLessons(print) {
   try {
     const response = await fetch("http://localhost:8080/lessons", {
       method: "GET",
@@ -10,10 +10,12 @@ async function retrieveLessons() {
       },
     });
     const result = await response.json();
-    console.log(result);
+    if (print) {
+      console.log(result);
+    }
     if (result == undefined) {
       errorMessage = "No lessons found.";
-      console.log(errorMessage)
+      console.log(errorMessage);
     }
     return result;
   } catch (err) {
@@ -21,13 +23,14 @@ async function retrieveLessons() {
   }
 }
 
-
 //Testing code.
-let idiot;
-try {
-    idiot = await retrieveLessons();
-    console.log(idiot[0].classType);
-} catch (error) {
-    idiot = await retrieveLessons();
-    console.log(idiot[0].classType);
-}
+// let idiot;
+// try {
+//   idiot = await retrieveLessons(true);
+//   console.log(idiot[0].classType);
+// } catch (error) {
+//   idiot = await retrieveLessons(false);
+//   idiot = await retrieveLessons(false);
+//   idiot = await retrieveLessons(false);
+//   console.log(idiot[0].classType);
+// }

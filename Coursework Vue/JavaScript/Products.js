@@ -1,13 +1,12 @@
 "use strict";
 
-//Imported data.
-import * as Page from "./Data/Page_Data.js";
-
 const pageData = new Vue({
   el: "#app",
   data: {
     sitename: "List of Lessons",
-    lessons: [
+    confirmationMessage: "",
+    lessons: [],
+    dummyLessons: [
       {
         id: 0,
         title: "After School Class",
@@ -114,14 +113,16 @@ const pageData = new Vue({
     sortAscending: true,
     searchInput: "",
     checkoutPage: false,
+    checkoutName: "",
+    checkoutTelephone: "",
+    searchLocal: false,
   },
   methods: {
-    canAddToCart: function (index) {
-      if (this.lessons[index].spaces > 0) {
-        return true;
-      } else {
-        return false;
-      }
+    canAddToCart: function (lesson) {
+      return lesson.spaces > 0;
+    },
+    canRemoveFromCart: function (lesson) {
+      return lesson.spaces < 5;
     },
     cartNotEmpty: function () {
       if (this.cart.length > 0) {
@@ -130,24 +131,53 @@ const pageData = new Vue({
         return false;
       }
     },
-    addToCart: function (index) {
-      let lessonIndex;
-      for (let i = 0; i < this.lessons.length; i++) {
-        if ((this.lessons[i].id === index)) {
-          lessonIndex = i;
-          break;
+    addToCart: function (lessonId) {
+      const lesson = this.lessons.find((lesson) => lesson.id === lessonId);
+      if (lesson && this.canAddToCart(lesson)) {
+        const lessonCopy = { ...lesson };
+        let lessonExists = false;
+        let lessonIndex;
+        lesson.spaces--;
+        lessonCopy.spaces--;
+        for (let i = 0; i < this.cart.length; i++) {
+          if (this.cart[i].id === lessonCopy.id) {
+            lessonExists = true;
+            lessonIndex = i;
+            break;
+          }
         }
+        if (!lessonExists) {
+          this.cart.push(lessonCopy);
+        } else {
+          this.cart.splice(lessonIndex, 1);
+          this.cart.push(lessonCopy);
+        }
+        console.log(this.lessons);
+        console.log(this.cart);
       }
-      if (this.canAddToCart(lessonIndex)) {
-        console.log(index);
-        console.log(lessonIndex);
-        this.cart.push(this.lessons[lessonIndex]);
-        this.lessons[lessonIndex].spaces--;
+    },
+    removeFromCart: function (lessonId) {
+      const lesson = this.lessons.find((lesson) => lesson.id === lessonId);
+      const lessonCopy = this.cart.find((lesson) => lesson.id === lessonId);
+      if (lesson.spaces < 5) {
+        lesson.spaces++;
+        lessonCopy.spaces++;
+      }
+    },
+    removeAllFromCart: function (lessonId) {
+      const lesson = this.lessons.find((lesson) => lesson.id === lessonId);
+      const lessonCopy = this.cart.find((lesson) => lesson.id === lessonId);
+      if (lesson.spaces < 5) {
+        lesson.spaces = 5;
+        lessonCopy.spaces = 5;
       }
     },
     displayCart: function () {
       for (let i = 0; i < this.cart.length; i++) {
         console.log("ID: " + this.cart[i].id + " Price: " + this.cart[i].price);
+        if (this.cart[i].spaces > 4) {
+          this.cart.splice(i, 1);
+        }
       }
       this.checkoutPage = !this.checkoutPage;
       this.switchPage();
@@ -169,26 +199,111 @@ const pageData = new Vue({
         checkoutList.style.display = "block";
       } else {
         console.log(false);
-        for (let i = 0; i < lessonsPages.length; i++) {
+        for (let i = 0; i < lessonsPages.length - 1; i++) {
           lessonsPages[i].style.display = "block";
         }
+        lessonsPages[2].style.display = "grid";
         checkoutList.style.display = "none";
       }
     },
-    checkoutFieldsEmpty: function () {
-      const name = document.getElementById("checkoutNameInput").value;
-      const telephoneNumber = document.getElementById("checkoutTelephoneInput").value;
-      if ((name !== "" && name !== undefined) && (telephoneNumber !== "" && telephoneNumber !== undefined)) {
-        console.log(`Name: ${name}, Number: ${telephoneNumber}.`);
-        return true;
-      } else {
-        console.log(`Name: ${name}, Number: ${telephoneNumber}.`);
-        return false;
+    confirmOrder: function () {
+      for (let i = 0; i < this.cart.length; i++) {
+        if (this.cart[i].spaces > 4) {
+          this.cart.splice(i, 1);
+        }
+        this.cart[i].quantity = 5 - this.cart[i].spaces;
+      }
+      const order = {
+        name: this.checkoutName,
+        telephoneNumber: this.checkoutTelephone,
+        cart: this.cart,
+      };
+      let instruction;
+      this.submitOrder(JSON.stringify(order));
+      for (let i = 0; i < this.cart.length; i++) {
+        instruction = {
+          searchTerm: {
+            id: this.cart[i].id,
+          },
+          updateParameter: {
+            $set: {
+              spaces: this.cart[i].spaces,
+            },
+          },
+        };
+        this.updateLesson(JSON.stringify(instruction));
+      }
+      console.log("Order confirmed.");
+      this.confirmationMessage = "Order confirmed.";
+    },
+    submitOrder: async function (order) {
+      try {
+        const response = await fetch("http://localhost:8080/orders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: order,
+        });
+        const result = await response.json();
+        console.log(result);
+      } catch (err) {
+        console.log("Error.");
       }
     },
-    confirmOrder: function () {
-      console.log("Order confirmed.");
-    }
+    updateLesson: async function (lesson) {
+      try {
+        const response = await fetch("http://localhost:8080/lessons", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: lesson,
+        });
+        const result = await response.json();
+        console.log(result);
+      } catch (err) {
+        console.log("Error.");
+      }
+    },
+    search() {
+      if (this.searchLocal) {
+        return this.searchClient();
+      } else {
+        this.searchServer();
+      }
+    },
+    searchClient() {
+      const searchInput = this.searchInput;
+      function checkItem(item) {
+        return (
+          item.title.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.classType.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.location.toLowerCase().includes(searchInput.toLowerCase()) ||
+          JSON.stringify(item.price).includes(searchInput.toLowerCase()) ||
+          JSON.stringify(item.spaces).includes(searchInput.toLowerCase())
+        );
+      }
+      return this.lessons.filter(checkItem);
+    },
+    async searchServer() {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/search?q=${this.searchInput}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const result = await response.json();
+        console.log(result);
+        this.lessons = result;
+      } catch (error) {
+        console.log("Error.");
+      }
+    },
   },
   computed: {
     sortedLessons() {
@@ -248,22 +363,48 @@ const pageData = new Vue({
         return this.lessons.sort(compare).reverse();
       }
     },
-    search() {
-      const searchInput = this.searchInput;
-      function checkItem(item) {
-        return (
-          item.title.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.classType.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.location.toLowerCase().includes(searchInput.toLowerCase()) ||
-          JSON.stringify(item.price).includes(searchInput.toLowerCase()) ||
-          JSON.stringify(item.spaces).includes(searchInput.toLowerCase())
-        );
-      }
-      return this.lessons.filter(checkItem);
-    },
     filteredCart() {
       const returnCart = [...new Set(this.cart)];
       return returnCart;
     },
+    isFormValid() {
+      const letterRegularExpression = /^[A-Za-z]+$/;
+      const numberRegularExpression = /^\d+$/;
+      return (
+        this.checkoutName.trim() !== "" &&
+        this.checkoutTelephone.trim() !== "" &&
+        letterRegularExpression.test(this.checkoutName) &&
+        numberRegularExpression.test(this.checkoutTelephone)
+      );
+    },
+  },
+  created: async function retrieveLessons() {
+    try {
+      const response = await fetch("http://localhost:8080/lessons", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      console.log(result);
+      this.lessons = result;
+      if (result == undefined) {
+        errorMessage = "No lessons found.";
+        console.log(errorMessage);
+      }
+      return result;
+    } catch (err) {
+      console.log("Error.");
+    }
   },
 });
+
+//Maths icon source: <a target="_blank" href="https://icons8.com/icon/QM0dP5g8D4UH/math">Math</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+//English icon source: <a target="_blank" href="https://icons8.com/icon/shCl9WoAcTSQ/english-language">English Language</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+//Computer icon source: <a target="_blank" href="https://icons8.com/icon/x96urEIUGUBd/computer">Computer</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+//Geography icon source: <a target="_blank" href="https://icons8.com/icon/43164/earth-globe">Geography</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+//Electrical engineering icon source: <a target="_blank" href="https://icons8.com/icon/1bDkft42EP0K/electrical">Electrical</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+//Chess icon source: <a target="_blank" href="https://icons8.com/icon/qYPfEYiRyUha/chesspiece">Chesspiece</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+//History icon source: <a target="_blank" href="https://icons8.com/icon/b8XZx9M6aR0i/history">History</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+//Chemistry icon source: <a target="_blank" href="https://icons8.com/icon/58776/periodic-table-of-elements">Chemistry</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
