@@ -240,7 +240,7 @@ const pageData = new Vue({
     },
     submitOrder: async function (order) {
       try {
-        const response = await fetch(`${this.globalURL}orders`, {
+        const response = await fetch(`${this.globalURL}/orders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -255,7 +255,7 @@ const pageData = new Vue({
     },
     updateLesson: async function (lesson) {
       try {
-        const response = await fetch(`${this.globalURL}lessons`, {
+        const response = await fetch(`${this.globalURL}/lessons`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
