@@ -291,7 +291,7 @@ const pageData = new Vue({
     async searchServer() {
       try {
         const response = await fetch(
-          `http://localhost:8080/search?q=${this.searchInput}`,
+          `${this.globalURL}/search?q=${this.searchInput}`,
           {
             method: "GET",
             headers: {
