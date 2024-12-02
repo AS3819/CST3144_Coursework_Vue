@@ -116,6 +116,8 @@ const pageData = new Vue({
     checkoutName: "",
     checkoutTelephone: "",
     searchLocal: false,
+    localURL: "http://localhost:8080",
+    globalURL: "https://as3819.github.io/CST3144_Coursework_Express",
   },
   methods: {
     canAddToCart: function (lesson) {
@@ -238,7 +240,7 @@ const pageData = new Vue({
     },
     submitOrder: async function (order) {
       try {
-        const response = await fetch("http://localhost:8080/orders", {
+        const response = await fetch(`${this.globalURL}orders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -253,7 +255,7 @@ const pageData = new Vue({
     },
     updateLesson: async function (lesson) {
       try {
-        const response = await fetch("http://localhost:8080/lessons", {
+        const response = await fetch(`${this.globalURL}lessons`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -380,7 +382,7 @@ const pageData = new Vue({
   },
   created: async function retrieveLessons() {
     try {
-      const response = await fetch("http://localhost:8080/lessons", {
+      const response = await fetch(`${this.globalURL}/lessons`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
