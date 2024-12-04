@@ -390,7 +390,7 @@ const pageData = new Vue({
       return returnCart;
     },
     isFormValid() {
-      const letterRegularExpression = /^[A-Za-z]+$/;
+      const letterRegularExpression = /^[A-Za-z\s]+$/;
       const numberRegularExpression = /^\d+$/;
       return (
         this.checkoutName.trim() !== "" &&
