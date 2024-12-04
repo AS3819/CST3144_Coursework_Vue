@@ -6,6 +6,7 @@ const pageData = new Vue({
     sitename: "List of Lessons",
     confirmationMessage: "",
     lessons: [],
+    tempLessons: [],
     dummyLessons: [
       {
         id: 0,
@@ -124,7 +125,7 @@ const pageData = new Vue({
       return lesson.spaces > 0;
     },
     canRemoveFromCart: function (lesson) {
-      return lesson.spaces < 5;
+      return lesson.spaces < this.findMaxSpaces(lesson.id);
     },
     cartNotEmpty: function () {
       if (this.cart.length > 0) {
@@ -161,7 +162,7 @@ const pageData = new Vue({
     removeFromCart: function (lessonId) {
       const lesson = this.lessons.find((lesson) => lesson.id === lessonId);
       const lessonCopy = this.cart.find((lesson) => lesson.id === lessonId);
-      if (lesson.spaces < 5) {
+      if (lesson.spaces < this.findMaxSpaces(lessonId)) {
         lesson.spaces++;
         lessonCopy.spaces++;
       }
@@ -169,9 +170,9 @@ const pageData = new Vue({
     removeAllFromCart: function (lessonId) {
       const lesson = this.lessons.find((lesson) => lesson.id === lessonId);
       const lessonCopy = this.cart.find((lesson) => lesson.id === lessonId);
-      if (lesson.spaces < 5) {
-        lesson.spaces = 5;
-        lessonCopy.spaces = 5;
+      if (lesson.spaces < this.findMaxSpaces(lessonId)) {
+        lesson.spaces = this.findMaxSpaces(lessonId);
+        lessonCopy.spaces = this.findMaxSpaces(lessonId);
       }
     },
     displayCart: function () {
@@ -306,6 +307,19 @@ const pageData = new Vue({
         console.log("Error.");
       }
     },
+    findMaxSpaces(lessonId) {
+      let target;
+      let maxSpaces;
+      for (let i = 0; i < this.tempLessons.length; i++) {
+        if (lessonId === this.tempLessons[i].id) {
+          target = this.tempLessons[i];
+          break;
+        }
+      }
+      maxSpaces = target.spaces;
+      console.log(maxSpaces);
+      return maxSpaces;
+    },
   },
   computed: {
     sortedLessons() {
@@ -395,7 +409,23 @@ const pageData = new Vue({
         errorMessage = "No lessons found.";
         console.log(errorMessage);
       }
-      return result;
+    } catch (err) {
+      console.log("Error.");
+    }
+    try {
+      const response = await fetch(`${this.globalURL}/lessons`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      console.log(result);
+      this.tempLessons = result;
+      if (result == undefined) {
+        errorMessage = "No lessons found.";
+        console.log(errorMessage);
+      }
     } catch (err) {
       console.log("Error.");
     }

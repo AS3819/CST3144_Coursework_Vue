@@ -69,7 +69,7 @@
             <p><span class="category-label">Title:</span> <span v-text="lesson.title"></span></p>
             <p><span class="category-label">Subject:</span> <span v-text="lesson.classType"></span></p>
             <p><span class="category-label">Price:</span> £<span v-text="lesson.price"></span></p>
-            <p><span class="category-label">Count:</span> <span v-text="5 - lesson.spaces"></span></p>
+            <p><span class="category-label">Count:</span> <span v-text="findMaxSpaces(lesson.id) - lesson.spaces"></span></p>
             <button @click="addToCart(lesson.id)" v-if="canAddToCart(lesson)">Add to cart</button>
             <button disabled="disabled" v-else>Add to cart</button>
             <button @click="removeFromCart(lesson.id)" v-if="canRemoveFromCart(lesson)">Remove one from cart</button>
