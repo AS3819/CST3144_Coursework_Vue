@@ -116,6 +116,7 @@ const pageData = new Vue({
     checkoutPage: false,
     checkoutName: "",
     checkoutTelephone: "",
+    ordered: false,
     searchLocal: false,
     localURL: "http://localhost:8080",
     globalURL: "https://cst3144-coursework-express.onrender.com",
@@ -182,6 +183,10 @@ const pageData = new Vue({
           this.cart.splice(i, 1);
         }
       }
+      if (this.ordered) {
+        this.cart.splice(0, this.cart.length);
+      }
+      this.ordered = false;
       this.checkoutPage = !this.checkoutPage;
       this.switchPage();
     },
@@ -236,6 +241,7 @@ const pageData = new Vue({
         };
         this.updateLesson(JSON.stringify(instruction));
       }
+      this.ordered = true;
       console.log("Order confirmed.");
       this.confirmationMessage = "Order confirmed.";
     },
@@ -390,7 +396,8 @@ const pageData = new Vue({
         this.checkoutName.trim() !== "" &&
         this.checkoutTelephone.trim() !== "" &&
         letterRegularExpression.test(this.checkoutName) &&
-        numberRegularExpression.test(this.checkoutTelephone)
+        numberRegularExpression.test(this.checkoutTelephone) &&
+        !this.ordered 
       );
     },
   },
